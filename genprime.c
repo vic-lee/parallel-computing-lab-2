@@ -43,20 +43,25 @@ int to_file(int arr_sz, char *is_prime, char *fname)
  */
 void sieve(int N, int thread_cnt, char *is_prime, int prime_sz)
 {
-    int sqrt_N = (int)ceil(sqrt(N));
-    printf("sqrt n: %d\n", sqrt_N);
 
     // initialize base is_prime values
     is_prime[0] = 0;
     is_prime[1] = 0;
 
-    for (size_t i = 3; i < sqrt_N; i += 2)
+#pragma omp parallel num_threads(thread_cnt) default(none) \
+    firstprivate(N, prime_sz) shared(is_prime)
     {
-        if (is_prime[i])
+        int sqrt_N = (int)ceil(sqrt(N));
+        for (size_t i = 3; i < sqrt_N; i += 2)
         {
-            for (size_t j = i * i, delta = i * 2; j < prime_sz; j += delta)
+            if (is_prime[i])
             {
-                is_prime[j] = 0;
+                size_t j, delta = i * 2;
+#pragma omp for
+                for (j = i * i; j < prime_sz; j += delta)
+                {
+                    is_prime[j] = 0;
+                }
             }
         }
     }
