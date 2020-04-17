@@ -1,2 +1,2 @@
 default:
-	gcc -g -Wall -fopenmp -std=c99 -o genprime genprimes.c
+	gcc -g -Wall -fopenmp -std=c99 -o genprime genprime.c
