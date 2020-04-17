@@ -64,6 +64,11 @@ void sieve(int N, int thread_cnt, char *is_prime, int prime_sz)
 
 int main(int argc, char *argv[])
 {
+
+    /*********** Read input ***********/
+
+    double t_start = 0.0, t_taken;
+
     int N, t;
     if (read_in(argc, argv, &N, &t) != 0)
     {
@@ -71,12 +76,21 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    /*********** Find primes ***********/
+
+    t_start = omp_get_wtime();
+
     char *is_prime;
     int prime_sz = N + 1;
     is_prime = (char *)calloc(prime_sz, sizeof(char));
     memset(is_prime, 1, prime_sz * sizeof(char));
 
     sieve(N, t, is_prime, prime_sz);
+
+    t_taken = omp_get_wtime() - t_start;
+    printf("Time take for the main part: %f\n", t_taken);
+
+    /*********** Write to file ***********/
 
     char fname[20];
     sprintf(fname, "%d.txt", N);
